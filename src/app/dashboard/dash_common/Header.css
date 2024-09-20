@@ -1,0 +1,103 @@
+*{
+    list-style: none;
+}
+:root{
+    /* --bgcolor:#212631; */
+    --bgcolor:white;
+    --bordercolor:#323a49;
+    --color:black;
+}
+.position{
+    position: sticky;
+    z-index: 100;
+}
+.clickable{
+    /* background: var(--bgcolor); */
+    color: var(--color);
+    border-radius: 5px;
+    position: absolute;
+    width: 200px;
+    top: 68px;
+    right: 20px;
+    background-color: white;
+    border: 0.5px solid var(--bordercolor);
+}
+.clickable .head{
+    background-color: #E7EAEE;
+    color: #6D7D9C;
+    padding: 5px 15px;
+}
+.clickable ul{
+    /* padding: 5px 15px; */
+    padding: 0px;
+    margin: 5px 0px;
+    border-bottom: 0.5px solid var(--bordercolor);
+}
+.clickable ul li{
+    /* margin: 10px 0px; */
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.clickable ul li:hover{
+    background-color: #f1f4f7;
+}
+.lock-account{
+    /* border-top: 0.5px solid #323A49; */
+    padding: 5px 15px;
+    margin: 5px 0px;
+    cursor: pointer;
+}
+
+.clickable .lock-account:hover{
+    background-color: #f1f4f7;
+}
+
+.clickable .updates-span{
+    background-color: #3D99F5;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+.clickable .message-span{
+    background-color: #249542;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+.clickable .task-span{
+    background-color: #DB5D5D;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+.clickable .comments-span{
+    background-color: #EDAD21;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+.clickable .payment-span{
+    background-color: #6B7785;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+.clickable .project-span{
+    background-color: #6261cc;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+    margin-left: 10px;
+}

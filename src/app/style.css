@@ -1,0 +1,71 @@
+.main-width{
+    max-width:100%;
+    display: flex;
+    gap: 20px;
+    background-color: #f0f0ee;
+    margin: auto;
+    padding: 20px 80px;
+
+}
+.main-width .font-size-main{
+    font-size: 72px;
+    /* font-weight: bold; */
+}
+.main-width .btn-main{
+    width: 30%;
+    padding: 10px 20px;
+    border: 2px solid black;
+    margin: 20px 0;
+    margin-right:20px ;
+}
+
+.fs-400{
+    font-weight: 400;
+
+}
+.fs-stretch{
+    font-stretch: condensed;
+}
+.bg-color{
+    background-color: #f9f9f9;
+}
+/* .slick-prev{
+    color: black !important;
+    padding: 5px !important;
+    left: 10px !important;
+    z-index: 100 !important;
+    width: 20px !important;
+    box-shadow: 1px 1px 0px 1px #ccc;
+    background-color: white !important;
+    border-radius: 50%;
+} */
+/* .slick-next{
+    color: black !important;
+    padding: 5px !important;
+    right: 10px !important;
+    z-index: 100 !important;
+    width: 20px !important;
+    background-color: white !important;
+    display: block;
+    box-shadow: 1px 1px 0px 1px #ccc;
+    border-radius: 50%;
+} */
+
+/* .slick-prev::before{
+    content: '<-' !important;
+    color: black !important;
+}
+.slick-next::before{
+    content:'->' !important;
+    color: black !important;
+} */
+.font-color{
+    color: #666666;
+}
+.border-btm{
+    /* text-decoration: underline; */
+    border-bottom: 1px solid black;
+}
+.fw-600{
+    font-weight: 600;
+}

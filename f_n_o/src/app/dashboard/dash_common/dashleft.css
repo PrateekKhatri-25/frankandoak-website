@@ -1,0 +1,104 @@
+.bg-color {
+    background-color: #212631 !important;
+    color: #FFF8F2 !important;
+}
+
+.title {
+    width: 100%;
+    position: sticky;
+    font-size: 22px;
+    z-index: 100;
+    padding: 10px;
+    padding-left: 20px;
+    border-top: 1px solid #323A49;
+    border-bottom: 1px solid #323A49;
+}
+
+.border-gray {
+    border: 0.5px solid #323A49;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.onhover {
+    border-radius: 5px !important;
+    font-size: 17px !important;
+    margin: 5px !important;
+    color: #8e8989 !important;
+    cursor: pointer;
+}
+
+.onhover:hover {
+    background-color: #2A303D !important;
+    margin: 5px;
+    color: white !important;
+}
+
+.active {
+    background-color: #2A303D !important;
+}
+
+.left-color-gray {
+    font-size: 12px;
+    margin: 10px 0px;
+    text-align: center;
+    color: #8e8989;
+}
+
+.accordion-button {
+    background-color: #212631 !important;
+    color: white;
+}
+
+.accordion-button:focus {
+    box-shadow: none !important;
+}
+
+.accordion-item {
+    color: white
+}
+
+.accordion-button:not(.collapse) {
+    color: white;
+    background-color: #212631;
+    box-shadow: none;
+}
+
+.height-acc {
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.height-acc::-webkit-scrollbar {
+    width: 8px;
+}
+
+.height-acc::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: inherit;
+}
+
+.accordion-button::after{
+    color: white;
+}
+
+.height-acc::-webkit-scrollbar-thumb {
+    width: 5px;
+    background-color: black;
+    border-radius: 10px;
+}
+
+.font-size-left {
+    font-size: 14px !important;
+}
+
+.width-circle {
+    font-size: 10px;
+}
+
+.order-left {
+    width: 90%;
+    padding: 10px;
+}

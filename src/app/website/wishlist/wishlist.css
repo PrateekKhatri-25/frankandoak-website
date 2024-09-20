@@ -1,0 +1,53 @@
+.bg-color{
+    background-color: #EBECEE;
+}
+.wishlist-position{
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    color: red;
+    background-color: white;
+    font-size: 14px;
+}
+.index-z{
+    z-index: -1;
+}
+.color-color{
+    color: #666697;
+    font-weight: bold;
+}
+.btn-position{
+    position: absolute;
+    top: 201px;
+    left: 10px;
+    background-color: white;
+    color: red;
+    padding: 10px;
+    width: 90%;
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+}
+.card-img .card-img-top{
+    cursor: pointer !important;
+}
+.btn-position:hover .card{
+    visibility: visible;
+    opacity: 1;
+}
+.grid-wishlist{
+    display: grid;
+    grid-template-columns: 23% 23% 23% 23%;
+    gap: 25px;
+}
+.bg-color .ul-wishlist{
+    padding: 10px 38px;
+    line-height: 32px;
+    font-weight: 400;
+}
+.bg-color .ul-wishlist li{
+    cursor: pointer;
+}
+.bg-color .ul-wishlist li:hover{
+    font-weight: bold;
+}
