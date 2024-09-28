@@ -1,15 +1,52 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../common_components/Header'
 import { Accordion, Col, Container, Row } from 'react-bootstrap'
 import Footer from '../common_components/Footer'
 import './clothing.css'
 import Link from 'next/link'
 import Image from 'next/image'
-import tshirt from '../../../public/images/tshirts.jpg'
+import tshirt from '../../../../public/images/tshirts.jpg'
 import { IoHeartOutline } from 'react-icons/io5'
+import Swal from 'sweetalert2'
+import axios from 'axios'
+import Loader from '@/app/dashboard/dash_common/Loader'
+import { FaHeart } from 'react-icons/fa6'
 
 const page = () => {
+    const [products, setProducts] = useState([]);
+    // const [iconToWish, setIconToWish] = useState(true)
+    const [filepath, setFilepath] = useState({});
+    const getProducts = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_HOST_NAME}api/admin-panel/product/read-product`);
+
+            if (response.status !== 200) {
+                Swal.fire({
+                    title: "Something went wrong",
+                    text: `${error.message}`,
+                    icon: "question"
+                });
+                return
+            }
+
+            setProducts(response.data.data);
+            setFilepath(response.data.file_path);
+
+        }
+        catch (error) {
+            console.log('error', error);
+            Swal.fire({
+                title: "Something went wrong",
+                text: `${error.message}`,
+                icon: "question"
+            });
+        }
+    };
+
+    useEffect(() => { getProducts(); }, []);
+    console.log(products);
+
     return (
         <div>
             <Header />
@@ -22,10 +59,10 @@ const page = () => {
                     <Col xl={3} className='scroll'>
                         <div><Link href='/' className='active'>Home</Link> /<span className='active'> Women</span> </div>
                         <div className='fs-5 my-3'>The Stockroom Sale</div>
-                        
+
                         <Accordion defaultActiveKey="0" flush className=' z-index-1'>
                             <Accordion.Item eventKey="0" className='z-index-1'>
-                            
+
                                 <Accordion.Header className='z-index-1 p-0'>Subcategory</Accordion.Header>
                                 <Accordion.Body>
                                     <ul className='p-0 m-0  fw-500'>
@@ -128,79 +165,51 @@ const page = () => {
                         <div className='fs-4 my-3'>New In</div>
 
                         <Row xl={4} >
-                            <Col className='mx-2 cursor-pointer p-0 z-index-1' style={{'width':'200px'}}>
-                            <div className='cards z-index-1' style={{ 'width': '200px','position':'relative' }}>
-                            <Image src={tshirt} width={200} className='' />
-                            <div className='clothing-button'>
-                                Quick Add
-                            </div>
-                            <div className='d-flex'>
-                               <div>
-                               <p className='fs-12 fw-bold my-3'>The Stripped Long Sleeve T-shirt in spruce</p>
-                               <p className='fs-12 fw-bold'>$69.50</p>
-                               </div>
-                               <div>
-                               <IoHeartOutline className='my-3'/>
-                               </div>
-                            </div>
-                        </div>
-                            </Col>
 
-                            <Col className='mx-2 cursor-pointer p-0' style={{'width':'200px'}}>
-                            <div className='cards z-index-1' style={{ 'width': '200px','position':'relative' }}>
-                            <Image src={tshirt} width={200} />
-                            <div className='clothing-button'>
-                                Quick Add
-                            </div>
-                            <div className='d-flex'>
-                               <div>
-                               <p className='fs-12 fw-bold my-3'>The Stripped Long Sleeve T-shirt in spruce</p>
-                               <p className='fs-12 fw-bold'>$69.50</p>
-                               </div>
-                               <div>
-                               <IoHeartOutline className='my-3'/>
-                               </div>
-                            </div>
-                        </div>
-                            </Col>
+                            {
+                                products.length == 0
+                                    ?
+                                    <Loader />
+                                    :
+                                    products.map((product, index) => {
+                                        return (
+                                            <Link href={`/website/clothing/${product._id}`} style={{ color: 'black', textDecoration: 'none' }}>
+                                                <Col className='mx-2 cursor-pointer p-0 z-index-1' style={{ 'width': '200px' }}>
+                                                    <div className='cards z-index-1 cursor-pointer' style={{ 'width': '200px', 'position': 'relative' }}>
+                                                        <img src={filepath + product.thumbnail} width={200} height={300} />
+                                                        <div className='clothing-button'>
+                                                            Quick Add
+                                                        </div>
+                                                        <div className='d-flex w-100 justify-content-between'>
+                                                            <div>
+                                                                <p className='fs-12 fw-bold my-3'>
+                                                                    {product.name}
+                                                                </p>
+                                                                <div className='fs-12'>Price:
+                                                                    <span className='fs-12 fw-bold'>
+                                                                        {product.price}Rs.
+                                                                    </span>
+                                                                </div>
 
-                            <Col className='mx-2 cursor-pointer p-0' style={{'width':'200px'}}>
-                            <div className='cards z-index-1' style={{ 'width': '200px','position':'relative' }}>
-                            <Image src={tshirt} width={200} />
-                            <div className='clothing-button'>
-                                Quick Add
-                            </div>
-                            <div className='d-flex'>
-                               <div>
-                               <p className='fs-12 fw-bold my-3'>The Stripped Long Sleeve T-shirt in spruce</p>
-                               <p className='fs-12 fw-bold'>$69.50</p>
-                               </div>
-                               <div>
-                               <IoHeartOutline className='my-3'/>
-                               </div>
-                            </div>
-                        </div>
-                            </Col>
+                                                                <span className='fs-12'>MRP: </span>
+                                                                <strike className='text-danger fs-12 '>
+                                                                    {product.MRP}Rs.
+                                                                </strike>
+                                                            </div>
+                                                            <div>
+                                                                <ChangeIcon />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                            </Link>
+                                        )
+                                    })
+                            }
 
-                            <Col className='mx-2 cursor-pointer p-0' style={{'width':'200px'}}>
-                            <div className='cards z-index-1' style={{ 'width': '200px','position':'relative' }}>
-                            <Image src={tshirt} width={200} />
-                            <div className='clothing-button'>
-                                Quick Add
-                            </div>
-                            <div className='d-flex'>
-                               <div>
-                               <p className='fs-12 fw-bold my-3'>The Stripped Long Sleeve T-shirt in spruce</p>
-                               <p className='fs-12 fw-bold'>$69.50</p>
-                               </div>
-                               <div>
-                               <IoHeartOutline className='my-3'/>
-                               </div>
-                            </div>
-                        </div>
-                            </Col>
+
                         </Row>
-                        
+
                     </Col>
                 </Row>
             </div>
@@ -210,3 +219,20 @@ const page = () => {
 }
 
 export default page
+
+const ChangeIcon = () => {
+    const [iconToWish, setIconToWish] = useState(false);
+
+
+    return (
+        <div>
+            {
+                iconToWish == false
+                    ?
+                    <IoHeartOutline className='my-3' onClick={() => setIconToWish(true)} />
+                    :
+                    <FaHeart className='my-3' onClick={() => setIconToWish(false)} />
+            }
+        </div>
+    )
+}

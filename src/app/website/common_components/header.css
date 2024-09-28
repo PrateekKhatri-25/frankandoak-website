@@ -12,6 +12,7 @@ header {
     top: 0px;
     left: 0px;
     box-shadow: 5px 0px 2px 0px #ccc;
+    z-index: 1000;
 }
 
 .text-decor {
@@ -130,8 +131,6 @@ header {
     z-index: 100;
     opacity: 0;
     transition: 0.5s;
-    /* visibility: visible;
-    opacity: 1; */
 }
 
 .header_items .men:hover .mega_menu_men {
@@ -239,4 +238,77 @@ header {
     padding: 10px 15px;
     width: 25%;
     height: 38px;
+}
+
+.after-user-login{
+    position: relative;
+    display: inline-flex;
+    top: 7px;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0px;
+}
+
+.user-hover-loggedin{
+    width: 300px;
+    text-align: left;
+    position: absolute;
+    top: 41px;
+    right: -19px;
+    background-color: white;
+    padding-bottom: 10px;
+    transition: 0.5s;
+    border-radius: 10px;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.after-user-login:hover .user-hover-loggedin{
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100;
+}
+
+.bg-main-title{
+    background-color: #ebecee;
+    padding: 10px 20px;
+    font-size: 22px;
+}
+.bg-ul-hover{
+    background-color: #262821;
+    color: white;
+    padding: 20px;
+    font-size: 20px; 
+    line-height: 14px;   
+}
+.hover-btn{
+    width: 100%;
+    padding: 10px;
+    background-color: #262821;
+    border: 2px solid #d2e8c4;
+    color: #d2e8c4;
+    transition: 0.5s;
+    font-size: 14px;
+}
+.hover-btn:hover{
+    background-color: #d2e8c4;
+    color: black;
+}
+.login-footer{
+    padding: 10px 20px;
+    font-size: 18px;
+    line-height: 38px;
+}
+.logout-btn{
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    border: none;
+    color: #666;
+    font-weight: 400;
+    text-decoration: underline;
+    transition: 0.5s;
+    font-size: 14px;
 }

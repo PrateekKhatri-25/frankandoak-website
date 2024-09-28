@@ -1,17 +1,24 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './loginform.css'
 import { FaHeart, FaTag } from 'react-icons/fa6'
 import Link from 'next/link';
 import { HiOutlineArrowLongRight } from 'react-icons/hi2';
 import { RiFacebookFill, RiGoogleFill } from 'react-icons/ri';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import Cookies from 'js-cookie';
+import { ContextAPI } from '@/app/context/Maincontext';
 
 const Loginform = ({ close }) => {
+    const {userLogin,setUserLogin ,setUserData,userData}=useContext(ContextAPI);
     const [signUp, setSignUp] = useState(true);
-    const [showPass, setShowPass] = useState(false);
+    const [showPass, setShowPass] = useState(true);
     const [errors, setErrors] = useState({});
+    const [errorsOne, setErrorsOne] = useState({});
+    const [login, setLoging] = useState({});
     const [formData, setFormData] = useState({});
 
-    const validateFormDate = () => {
+    const validateFormregister = () => {
 
         let checkError = {};
         if (!formData.f_name) {
@@ -39,19 +46,105 @@ const Loginform = ({ close }) => {
         //     checkError.password='Enter a Valid Password'
         // }
 
-        setErrors(checkError);
+        console.log(Object.keys(checkError));
         return (Object.keys(checkError).length === 0);
 
     };
-    const handleGenerateOtp = () => {
-        const ifValid = validateFormDate();
-        if (ifValid) { }
+
+    const validFormLogin = () => {
+        let checkErrorOne = {};
+
+        const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+
+        if (!login.email || !login.email.match(emailPattern)) {
+            checkErrorOne.email = 'Email is required';
+        }
+
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+        if (!login.password || !login.password.match(passwordPattern)) {
+            checkErrorOne.password = 'Password is required';
+        }
+        setErrorsOne(checkErrorOne);
+        return (Object.keys(checkErrorOne).length === 0);
+
+    };
+
+    const handleGenerateOtp = async () => {
+        const ifValid = validateFormregister();
+        if (ifValid) {
+            try {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_HOST_NAME}api/frankandoak-services/user/user-register`, formData);
+
+                if (response.status !== 200) return alert("something wrong");
+
+                setSignUp(true)
+
+                Swal.fire("Registeration Completed")
+
+                setUserData(response.data.data);
+
+            }
+            catch (error) {
+                console.log(error);
+                alert("something went wrong")
+            }
+        }
         else {
             setTimeout(() => {
                 setErrors({});
             }, 3000);
         }
         // console.log(errors);
+    };
+    
+    // console.log(userData);
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        const ifValidLogin = validFormLogin();
+        if (ifValidLogin) {
+
+            try {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_HOST_NAME}api/frankandoak-services/user/login-user`, login);
+
+
+                if (response.status !== 200) {
+                    console.log("hello")
+                    Swal.fire({
+                        title: "The server error",
+                        text: "Something went wrong",
+                        icon: "error"
+                    })
+                    return
+                }
+
+                Cookies.set('userLogin', JSON.stringify(login), { expires: 30 });
+
+                setUserLogin(true);
+                
+                Swal.fire("Login Successfull");
+
+                close(false)
+
+            }
+            catch (error) {
+                Swal.fire({
+                    title: "The Internet?",
+                    text: "Something Went Wrong",
+                    icon: "question"
+                });
+
+                console.log(error);
+            }
+        }
+        else {
+            setTimeout(() => {
+                setErrorsOne({});
+            }, 3000);
+        }
+        // console.log(userLogin);
     };
     return (
         <div className='login text-start'>
@@ -110,17 +203,27 @@ const Loginform = ({ close }) => {
             <div className='padding'>
                 {
                     signUp ? (
-                        <form method='post'>
-                            <div>
+                        <form method='post' onSubmit={handleLogin}>
+                            <div className='position-relative'>
+                                {errorsOne.email &&
+                                    <p className='errors'>{errorsOne.email} </p>}
                                 <input
-                                    className='w-100 p-2 my-2 rounded-0'
+                                    className='w-100 p-2 my-4 rounded-0'
                                     type='email'
+                                    name='email'
+                                    value={login.email}
+                                    onChange={(e) => { setLoging({ ...login, email: e.target.value }) }}
                                     placeholder='Email Address' />
                             </div>
 
                             <div className='position-relative'>
+                                {errorsOne.password &&
+                                    <p className='errors'>{errorsOne.password}</p>}
                                 <input
-                                    className='w-100 p-2 my-2 rounded-0'
+                                    className='w-100 p-2 my-4 rounded-0'
+                                    name='password'
+                                    value={login.password}
+                                    onChange={(e) => { setLoging({ ...login, password: e.target.value }) }}
                                     type={showPass ? 'password' : 'text'}
                                     placeholder='Password'
                                 />
@@ -138,7 +241,7 @@ const Loginform = ({ close }) => {
                                 </Link>
                             </div>
                             <div className='text-start my-3'>
-                                <button className='text-center p-2 bg-black text-white border-0 w-100'>Log In</button>
+                                <button className='text-center p-2 bg-black text-white border-0 w-100' >Log In</button>
                             </div>
 
                         </form>

@@ -36,23 +36,38 @@ const page = () => {
     }, [setParentCats])
 
     const handleStatus = async (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         const newValue = (e.target.textContent === 'Active') ? false : true
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Status Updated successfully",
+            showConfirmButton: false,
+            timer: 1500
+          })
         try {
             const response = await axios.
                 put(`http://localhost:5200/api/admin-panel/parent-category/update-parent-category-status/${e.target.value}`, { newValue });
 
             if (response.status !== 200) return alert('something wrong')
-            alert('status updated')
+
+            // alert('status updated')
             const indexNo = parentCats.findIndex((parentCat) => parentCat._id === e.target.value)
+
             const newData = [...parentCats]
+
             parentCats[indexNo].status = newValue
+
             setParentCats(newData)
 
         }
         catch (error) {
             console.log(error);
-            alert('something went wrong')
+            Swal.fire({
+                title: "The Internet?",
+                text: "That thing is still around?",
+                icon: "question"
+              });
         }
     }
 
@@ -92,15 +107,36 @@ const page = () => {
     }, [selectedId, parentCats])
 
     const handleDelete = async (_id) => {
-        if (!window.confirm('Are you sure you want to delete this category')) return
+        // if (!window.confirm('Are you sure you want to delete this category')) return
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+          })
 
         try {
             const response = await axios.delete(`http://localhost:5200/api/admin-panel/parent-category/delete-parent-category/${_id}`);
+
             if (response.status !== 200) return alert('something wrong');
-            alert('deleted');
+
+            // alert('deleted');
+            Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success"
+              });
+
             const indexNo = parentCats.findIndex((parentCat) => parentCat._id === _id);
+
             const newData = [...parentCats];
+
             newData.splice(indexNo, 1);
+            
             setParentCats(newData);
         }
         catch (error) {

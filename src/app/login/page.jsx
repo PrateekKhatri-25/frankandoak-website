@@ -30,8 +30,11 @@ const page = () => {
             const response = await axios.post(`http://localhost:5200/api/admin-panel/admin/login`, formData);
             // despatch(storing(response.data.data))
             if (response.status === 200) {
+
                 Cookies.set("adminlogin", JSON.stringify(response.data.data), { expires: 7 })
+
                 router.push('/dashboard')
+                
                 console.log(response.data.data);
             }
         }

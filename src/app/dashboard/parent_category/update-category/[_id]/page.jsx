@@ -9,7 +9,7 @@ const page = () => {
   const { _id } = useParams();
   const [category, setCategory] = useState([])
   const router = useRouter();
-  console.log(process.env.NEXT_PUBLIC_SERVER_NAME);
+  // console.log(process.env.NEXT_PUBLIC_SERVER_NAME);
 
   const handleFetchCategory = async () => {
     // console.log(_id);

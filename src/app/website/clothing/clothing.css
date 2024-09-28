@@ -64,9 +64,9 @@
     background-color: #F2E6B1;
 }
 
-.z-index-1 {
+/* .z-index-1 {
     z-index: -10;
-}
+} */
 
 .scroll {
     height: 500px;
@@ -82,7 +82,7 @@
     position: absolute;
     width: 90%;
     text-align: center;
-    bottom: 112px;
+    bottom: 104px;
     left: 10px;
     padding: 10px;
     background-color: white;
@@ -91,13 +91,18 @@
     transition: 0.5s;
     visibility: hidden;
     opacity: 0;
+
 }
 
 .cards:hover .clothing-button {
-    visibility: visible;
-    opacity: 1;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
-.accordion {
-    position: static;
+.w-45{
+    width: 45%;
+}
+
+.fs-18{
+    font-size: 18px;
 }

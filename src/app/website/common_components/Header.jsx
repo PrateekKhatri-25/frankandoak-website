@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './header.css';
 import Image from 'next/image';
 import logo from '../../../../public/images/FAO_logo2.jpg';
@@ -16,7 +16,7 @@ import header_women1 from '../../../../public/images/header_women1.jpg';
 import header_women2 from '../../../../public/images/header_women2.jpg';
 import header_men1 from '../../../../public/images/header_men1.jpg';
 import header_men2 from '../../../../public/images/header_men2.jpg';
-
+import hover_img from "../../../../public/images/favicon.png";
 import Who_we_are from '../../../../public/images/Who_we_are.jpg';
 import jeans_story from '../../../../public/images/jeans_story.jpg';
 import jacket_story from '../../../../public/images/jacket_story.jpg';
@@ -27,10 +27,14 @@ import { FaBars } from 'react-icons/fa6';
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Button from 'react-bootstrap/Button';
 import Loginform from './Loginform';
+import { ContextAPI } from '@/app/context/Maincontext';
+import Cookies from 'js-cookie';
 
 const Header = () => {
   const [loginModal, setLoginModal] = useState(false);
   const [show, setShow] = useState(false);
+  const { userLogin, setUserLogin, userData, setUserData } = useContext(ContextAPI);
+  // console.log(userData);
   // const [show2,setShow2]=useState(false);
 
   let settings = {
@@ -43,7 +47,13 @@ const Header = () => {
     autoplay: true,
     autoplaySpeed: 5000,
   }
-  console.log(loginModal);
+
+  const handleLogout = () => {
+    setUserLogin(false);
+    setUserData({});
+    Cookies.remove('userLogin')
+  }
+  // console.log(loginModal);
   return (
     <div>
       <header className='header'>
@@ -77,7 +87,7 @@ const Header = () => {
                   <div>
                     <div className='fs-7 my-3'><u>Women's Stockroom Sale</u></div>
                     <ul>
-                      <Link href='/clothing' style={{ 'color': 'black', 'textDecoration': 'none' }}><li>Shop All</li></Link>
+                      <Link href='/website/clothing' style={{ 'color': 'black', 'textDecoration': 'none' }}><li>Shop All</li></Link>
                       <li>Accessories starting at $10</li>
                       <li>Tops starting at $20</li>
                       <li>Swimwear at $20</li>
@@ -269,9 +279,63 @@ const Header = () => {
 
             <HiMagnifyingGlass className='fs-3 cursor-pointer mx-2' />
 
-            <IoPersonCircleOutline
-              className='fs-3 cursor-pointer mx-2 position-relative'
-              onClick={() => { setLoginModal(!loginModal) }} />
+            {
+              userLogin ?
+                <div className='after-user-login'>
+                  <IoPersonCircleOutline className='fs-3 cursor-pointer ' />
+                  <div className='user-hover-loggedin'>
+                    <div className=' bg-main-title'>
+                      My Account
+                    </div>
+                    <div className='bg-ul-hover'>
+                      <ul className='mx-0 p-0'>
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <li> {`Hi, ${userData.f_name} !`} </li>
+                          <Image src={hover_img} height={25} width={25} alt='frankandoak' />
+                        </div>
+
+                        <li><hr /></li>
+
+                        <div className='d-flex justify-content-between'>
+                          <li> Points: </li>
+                          <div>20</div>
+                        </div>
+
+                        <li><hr/></li>
+
+                        <div className='d-flex justify-content-between'>
+                          <li> Tier: </li>
+                          <div>Community</div>
+                        </div>
+
+                        <li><hr/></li>
+
+                      </ul>
+                      <button className='hover-btn'>View Dashboard</button>
+                    </div>
+                    <div className='login-footer'>
+                      <ul className='mx-0 p-0'>
+                        <li className='cursor-pointer'> <Link href='/website/wishlist' style={{color:'black',textDecoration:'none'}}>
+                        Wishlist &nbsp;<IoHeartOutline/> 
+                        </Link></li>
+
+                        <li className='cursor-pointer'>Orders & Returns</li>
+                        <li className='cursor-pointer'>Address book</li>
+                        <li className='cursor-pointer'>Account settings</li>
+                        <li className='mt-5'><hr/></li>
+                      </ul>
+                      <button className='logout-btn' onClick={handleLogout}>Log out</button>
+                    </div>
+                  </div>
+                </div>
+                :
+                <IoPersonCircleOutline
+                  className='fs-3 cursor-pointer mx-2 position-relative'
+                  onClick={() => { setLoginModal(!loginModal) }} />
+            }
+
+
+
 
             <div className={
               loginModal ? 'model' : 'd-none'
@@ -284,12 +348,12 @@ const Header = () => {
               hello model
             </div> */}
 
-            <Link href='/wishlist' style={{ 'color': 'black' }}><IoHeartOutline className='fs-3 cursor-pointer mx-2' /></Link>
+            <Link href='/website/wishlist' style={{ 'color': 'black' }}><IoHeartOutline className='fs-3 cursor-pointer mx-2' /></Link>
 
             {/* offcanvas */}
 
 
-            <Link href='/add-to-cart' style={{ 'color': 'black' }}>
+            <Link href='/website/website/add-to-cart' style={{ 'color': 'black' }}>
               <MdOutlineShoppingBag className='fs-3 cursor-pointer mx-2 me-3' />
             </Link>
 
@@ -393,8 +457,12 @@ const Header = () => {
 
               </div>
 
-              <IoHeartOutline className='fs-3 cursor-pointer mx-1' />
-              <MdOutlineShoppingBag className='fs-3 cursor-pointer mx-1 me-3' />
+              <Link href='/website/wishlist' style={{ color: "black" }}>
+                <IoHeartOutline className='fs-3 cursor-pointer mx-1' />
+              </Link>
+              <Link href='/website/add-to-cart' style={{ color: "black" }}>
+                <MdOutlineShoppingBag className='fs-3 cursor-pointer mx-1 me-3' />
+              </Link>
             </div>
           </div>
         </header>
