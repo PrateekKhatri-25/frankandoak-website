@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 import Header from '../common_components/Header'
 import Footer from '../common_components/Footer'
 import { Col, Container, Row } from 'react-bootstrap'
@@ -7,8 +8,35 @@ import second_slider_img1 from '../../../../public/images/second_slider_img1.jpg
 import Image from 'next/image'
 import { FaHeart } from 'react-icons/fa6'
 import { IoHeartOutline } from 'react-icons/io5'
+import Cookies from 'js-cookie'
+import Swal from 'sweetalert2'
+import axios from 'axios'
 
 const page = () => {
+  let cookieData=Cookies.get('userLogin');
+
+  if(cookieData){
+    cookieData=JSON.parse(cookieData)
+  }
+  const handleWishlist=async()=>{
+    try{
+      const response=await axios.get(`${process.env.NEXT_PUBLIC_HOST_NAME}api/frankandoak-services/wishlist/view-wishlist/${cookieData.id}`)
+
+      console.log(response);
+    }
+    catch(error){
+      console.log(error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      })
+    }
+  }
+
+  useEffect(()=>{
+    handleWishlist();
+  },[]);
   return (
     <div>
       <Header />

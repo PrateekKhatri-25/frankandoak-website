@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../common_components/Header'
 import { Accordion, Col, Container, Row } from 'react-bootstrap'
 import Footer from '../common_components/Footer'
@@ -12,6 +12,7 @@ import Swal from 'sweetalert2'
 import axios from 'axios'
 import Loader from '@/app/dashboard/dash_common/Loader'
 import { FaHeart } from 'react-icons/fa6'
+import { ContextAPI } from '@/app/context/Maincontext'
 
 const page = () => {
     const [products, setProducts] = useState([]);
@@ -45,7 +46,7 @@ const page = () => {
     };
 
     useEffect(() => { getProducts(); }, []);
-    console.log(products);
+    // console.log(products);
 
     return (
         <div>
@@ -173,10 +174,11 @@ const page = () => {
                                     :
                                     products.map((product, index) => {
                                         return (
-                                            <Link href={`/website/clothing/${product._id}`} style={{ color: 'black', textDecoration: 'none' }}>
+                                            
                                                 <Col className='mx-2 cursor-pointer p-0 z-index-1' style={{ 'width': '200px' }}>
                                                     <div className='cards z-index-1 cursor-pointer' style={{ 'width': '200px', 'position': 'relative' }}>
-                                                        <img src={filepath + product.thumbnail} width={200} height={300} />
+                                                    <Link href={`/website/clothing/${product._id}`} style={{ color: 'black', textDecoration: 'none' }}>
+                                                        <img src={filepath + product.thumbnail} width={200} height={300} /></Link>
                                                         <div className='clothing-button'>
                                                             Quick Add
                                                         </div>
@@ -202,7 +204,6 @@ const page = () => {
                                                         </div>
                                                     </div>
                                                 </Col>
-                                            </Link>
                                         )
                                     })
                             }
@@ -221,9 +222,9 @@ const page = () => {
 export default page
 
 const ChangeIcon = () => {
-    const [iconToWish, setIconToWish] = useState(false);
-
-
+    const {iconToWish, setIconToWish} = useContext(ContextAPI);
+    // const [iconToWish, setIconToWish] = useState(false);
+    console.log(iconToWish);
     return (
         <div>
             {

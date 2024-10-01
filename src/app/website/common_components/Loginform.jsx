@@ -80,9 +80,12 @@ const Loginform = ({ close }) => {
 
                 setSignUp(true)
 
-                Swal.fire("Registeration Completed")
+                Swal.fire("Registeration Completed");
+
+                // console.log((response.data.data));
 
                 setUserData(response.data.data);
+                
 
             }
             catch (error) {
@@ -98,7 +101,6 @@ const Loginform = ({ close }) => {
         // console.log(errors);
     };
     
-    // console.log(userData);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -120,11 +122,17 @@ const Loginform = ({ close }) => {
                     return
                 }
 
-                Cookies.set('userLogin', JSON.stringify(login), { expires: 30 });
+                console.log(response.data.data);
+
+               Cookies.set('userLogin', JSON.stringify(response.data.data), { expires: 30 });
+
+                // console.log(JSON.parse(cookieData));
 
                 setUserLogin(true);
                 
                 Swal.fire("Login Successfull");
+
+                setUserData(response.data.data)
 
                 close(false)
 
@@ -146,6 +154,8 @@ const Loginform = ({ close }) => {
         }
         // console.log(userLogin);
     };
+
+    // console.log(userData);
     return (
         <div className='login text-start'>
             <span onClick={() => close(false)} className='close-btn'> x </span>

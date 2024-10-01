@@ -290,7 +290,7 @@ const Header = () => {
                     <div className='bg-ul-hover'>
                       <ul className='mx-0 p-0'>
                         <div className='d-flex justify-content-between align-items-center'>
-                          <li> {`Hi, ${userData.f_name} !`} </li>
+                          <li> {`Hi, ${userData.f_name}  !`} </li>
                           <Image src={hover_img} height={25} width={25} alt='frankandoak' />
                         </div>
 
@@ -353,7 +353,7 @@ const Header = () => {
             {/* offcanvas */}
 
 
-            <Link href='/website/website/add-to-cart' style={{ 'color': 'black' }}>
+            <Link href='/website/add-to-cart' style={{ 'color': 'black' }}>
               <MdOutlineShoppingBag className='fs-3 cursor-pointer mx-2 me-3' />
             </Link>
 
