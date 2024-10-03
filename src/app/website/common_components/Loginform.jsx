@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';
 import { ContextAPI } from '@/app/context/Maincontext';
 
 const Loginform = ({ close }) => {
-    const {userLogin,setUserLogin ,setUserData,userData}=useContext(ContextAPI);
+    const {userLogin,cookiData,setCookieData,setUserLogin ,setUserData,userData}=useContext(ContextAPI);
     const [signUp, setSignUp] = useState(true);
     const [showPass, setShowPass] = useState(true);
     const [errors, setErrors] = useState({});
@@ -84,7 +84,7 @@ const Loginform = ({ close }) => {
 
                 // console.log((response.data.data));
 
-                setUserData(response.data.data);
+                // setUserData(response.data.data);
                 
 
             }
@@ -124,15 +124,16 @@ const Loginform = ({ close }) => {
 
                 console.log(response.data.data);
 
-               Cookies.set('userLogin', JSON.stringify(response.data.data), { expires: 30 });
+                Cookies.set('userLogin', JSON.stringify(response.data.data), { expires: 30 });
 
+            //    setCookieData(cookies)
                 // console.log(JSON.parse(cookieData));
 
-                setUserLogin(true);
+                // setUserLogin(true);
                 
                 Swal.fire("Login Successfull");
 
-                setUserData(response.data.data)
+                // setUserData(response.data.data)
 
                 close(false)
 

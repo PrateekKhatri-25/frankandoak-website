@@ -16,9 +16,12 @@ import { FaHeart } from 'react-icons/fa6'
 
 const page = () => {
     const { _id } = useParams();
-    const { userData, setUserData, cartData, setCartData, wishData, setWishData ,iconToWish,setIconToWish } = useContext(ContextAPI);
+    const { cookiData, setCookiData, cartData, setCartData, wishData, setWishData} = useContext(ContextAPI);
+    const [iconToWish, setIconToWish] = useState(false);
     const [singleData, setSingleData] = useState({});
     const [filepath, setFilepath] = useState('');
+    const [checkedSize, setCheckedSize] = useState([]);
+    const [checkedColor, setCheckedColor] = useState([]);
     // console.log(cartData);
 
     const fetchProduct = async () => {
@@ -31,7 +34,14 @@ const page = () => {
                 icon: "question"
             });
             setSingleData(response.data.data);
-            setFilepath('http://localhost:5200/frankandoak-files/products/')
+
+            const sizes = response.data.data.size.map((v) => ({ 'name': v.size_name, 'id': v._id }))
+            setCheckedSize(sizes);
+
+            const colors = response.data.data.color.map((v) => ({ 'name': v.colorName, 'id': v._id, 'colorcode': v.colorcode }))
+            setCheckedColor(colors);
+
+            setFilepath('http://localhost:5200/frankandoak-files/products/');
         }
         catch (error) {
             console.log(error)
@@ -59,7 +69,7 @@ const page = () => {
             });
 
             setIconToWish(true)
-            // console.log((response));
+            console.log(response);
 
             Swal.fire({
                 title: "Success !!",
@@ -78,11 +88,11 @@ const page = () => {
     };
     // console.log(singleData, filepath);
 
-    const handleCartData=async()=>{
-        try{
-            const response=await axios.post(`${process.env.NEXT_PUBLIC_HOST_NAME}api/frankandoak-services/cart/add-to-cart`,cartData);
+    const handleCartData = async () => {
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_HOST_NAME}api/frankandoak-services/cart/add-to-cart`, cartData);
 
-            if(response.status!==200) return Swal.fire({
+            if (response.status !== 200) return Swal.fire({
                 title: "Something went wrong",
                 text: `${response.data.message}`,
                 icon: "question"
@@ -94,7 +104,7 @@ const page = () => {
                 icon: "success"
             })
         }
-        catch(error){
+        catch (error) {
             console.log(error);
             Swal.fire({
                 title: "Something went wrong",
@@ -156,7 +166,10 @@ const page = () => {
 
                                     <div className='d-flex my-4'>
                                         <strike className='fw-bold'> {singleData.MRP}Rs. </strike>
-                                        <p className='text-danger ms-4 fw-bold'> -{Math.floor((singleData.price / singleData.MRP) * 100)}%  </p>
+
+                                        <p className='text-danger ms-4 fw-bold'>
+                                            -{Math.floor((singleData.price / singleData.MRP) * 100)}%
+                                        </p>
                                     </div>
 
                                     <p className='fw-bold'> {singleData.price}Rs. </p>
@@ -164,24 +177,33 @@ const page = () => {
                                     <p className='fs-4'>Select a Size</p>
 
                                     <div>
-                                        <HandleSize singleData={singleData} />
+                                        {
+                                            checkedSize.map((v) => (
+                                                <HandleSize singleData={v} />
+                                            ))
+                                        }
+
 
                                     </div>
 
                                     <p className='my-2 fs-4'>Select a Color</p>
 
                                     <div>
-                                        <Handlecolors singleData={singleData} />
+                                        {
+                                            checkedColor.map((v) => (
+                                                <Handlecolors singleData={singleData} v={v} />
+                                            ))
+                                        }
                                     </div>
                                     <div className='d-flex w-100'>
 
                                         <button onClick={handleCartData} className='w-75 bg-black text-center p-2 border-0 cursor-pointer text-white'> Add To Cart </button>
-                                    {
-                                        iconToWish == true ?
-                                        <button  className='w-25 border border-black border-2 mx-2 fs-2 bg-white p-2'> <FaHeart />  </button>
-                                        :
-                                        <button onClick={handleWishlist} className='w-25 border border-black border-2 mx-2 fs-2 bg-white p-2'> <IoHeartOutline />  </button>
-                                    }
+                                        {
+                                            iconToWish == true ?
+                                                <button className='w-25 border border-black border-2 mx-2 fs-2 bg-white p-2'> <FaHeart />  </button>
+                                                :
+                                                <button onClick={handleWishlist} className='w-25 border border-black border-2 mx-2 fs-2 bg-white p-2'> <IoHeartOutline />  </button>
+                                        }
                                     </div>
 
                                     <p className='fs-4 my-3'>Description</p>
@@ -212,44 +234,28 @@ const page = () => {
 export default page
 
 
-function HandleSize({ singleData }) {
+function HandleSize(singleData) {
     const { cartData, setCartData } = useContext(ContextAPI);
-    // console.log('size',singleData);
     const [sizeColor, setSizeColor] = useState(false)
 
     const handlesize = (_id) => {
         const size_id = _id;
         setCartData({ ...cartData, size_id })
+        // if (_id) {
         setSizeColor(!sizeColor);
+        // }
     }
-
-    // console.log(sizeColor);
-    // console.log(cartData);
     return (
-        <div>
-            {
-                singleData && singleData.size
-                    ?
-                    (
-                        singleData.size.map((size) => {
-                            return (
-                                <span className={`fs-18 w-25 border border-black rounded-pill p-2 mx-2 my-3 cursor-pointer ${sizeColor == true ? 'bg-secondary text-white' : ''}`}
-                                    onClick={() => handlesize(size._id)}>
-                                    {size.size_name}
-                                </span>
-                            )
-                        })
-                    )
-                    :
-                    null
-            }
-        </div>
+        <button className={` border border-black fs-14 mx-2 my-3 cursor-pointer ${sizeColor == true ? 'bg-black text-white' : 'bg-white'}`}
+            onClick={() => handlesize(singleData.singleData.id)}>
+            {singleData.singleData.name}
+        </button>
     )
 };
 
 
-function Handlecolors({ singleData }) {
-    const { cartData, setCartData, userData, setUserData } = useContext(ContextAPI);
+function Handlecolors({ singleData, v }) {
+    const { cartData, setCartData, cookiData, setCookiData } = useContext(ContextAPI);
 
     const [colorBg, setColorBg] = useState(false)
 
@@ -258,41 +264,26 @@ function Handlecolors({ singleData }) {
 
         const product_id = singleData._id;
 
-        const user_id = userData.id;
+        const user_id = cookiData.id;
 
         setCartData({ ...cartData, color_id, product_id, user_id })
 
         setColorBg(!colorBg);
     }
     return (
-        <div>
-            {
-                singleData && singleData.color
-                    ?
-                    (
-                        singleData.color.map((color) => {
-                            return (
-                                <ul>
-                                    <li className={`cursor-pointer fs-18 w-25 py-2 px-2 
-                                    ${colorBg == true ? 'border border-black rounded-pill' : ''}`}
-                                        onClick={() => handlecolor(color._id)}>
-                                        {color.colorName} &nbsp;
 
-                                        <span className='border rounded-circle ' style={{
-                                            padding: '5px 8px',
-                                            backgroundColor: color.colorcode
-                                        }}>
-                                        </span>
-
-                                    </li>
-                                </ul>
-                            )
-                        })
-                    )
-                    :
-                    null
+        <button
+            className={`p-3 me-2 my-3 border border-black rounded-circle border-1 cursor-pointer fs-18 ${colorBg == true ? 'border-2 ' : ''}`
             }
-        </div>
+
+            style={{
+                backgroundColor: v.colorcode,
+            }}
+
+            onClick={() => handlecolor(v.id)}
+        >
+        </button>
+
     )
 }
 

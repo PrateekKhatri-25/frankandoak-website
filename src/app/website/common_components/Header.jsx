@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './header.css';
 import Image from 'next/image';
 import logo from '../../../../public/images/FAO_logo2.jpg';
@@ -29,11 +29,14 @@ import Button from 'react-bootstrap/Button';
 import Loginform from './Loginform';
 import { ContextAPI } from '@/app/context/Maincontext';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
   const [loginModal, setLoginModal] = useState(false);
   const [show, setShow] = useState(false);
-  const { userLogin, setUserLogin, userData, setUserData } = useContext(ContextAPI);
+  const [search,setSearch]=useState(false);
+  const router=useRouter();
+  const { cookiData,setCookiData,userLogin, setUserLogin, userData, setUserData } = useContext(ContextAPI);
   // console.log(userData);
   // const [show2,setShow2]=useState(false);
 
@@ -53,6 +56,40 @@ const Header = () => {
     setUserData({});
     Cookies.remove('userLogin')
   }
+
+  const checkIfLogin=()=>{
+    let cookie=Cookies.get('userLogin')
+    if(cookie){
+      cookie=JSON.parse(cookie);
+      setCookiData(cookie);
+      
+      setUserLogin(true);
+      
+      // console.log(cookie);
+    }
+  };
+
+  const handleSearch=()=>{
+    if(search==false){
+      router.push('/website/search')
+      setSearch(!search);
+    }
+    else if(search==true){
+      router.push('/')
+      setSearch(!search);
+
+    }
+  }
+
+  // console.log(search);
+
+
+useEffect(()=>{
+  checkIfLogin();
+},[]);
+
+// console.log(cookiData);
+
   // console.log(loginModal);
   return (
     <div>
@@ -277,7 +314,7 @@ const Header = () => {
           </div>
           <div className='text-end w-25'>
 
-            <HiMagnifyingGlass className='fs-3 cursor-pointer mx-2' />
+            <HiMagnifyingGlass onClick={handleSearch} className='fs-3 cursor-pointer mx-2' />
 
             {
               userLogin ?
@@ -290,7 +327,7 @@ const Header = () => {
                     <div className='bg-ul-hover'>
                       <ul className='mx-0 p-0'>
                         <div className='d-flex justify-content-between align-items-center'>
-                          <li> {`Hi, ${userData.f_name}  !`} </li>
+                          <li> {`Hi, ${cookiData.f_name}  !`} </li>
                           <Image src={hover_img} height={25} width={25} alt='frankandoak' />
                         </div>
 

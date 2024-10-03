@@ -16,11 +16,16 @@ import { ContextAPI } from '@/app/context/Maincontext'
 
 const page = () => {
     const [products, setProducts] = useState([]);
+    const [productCat, setProductCat] = useState([]);
+    const [colors, getColors] = useState([]);
+    const { iconToWish, setIconToWish } = useContext(ContextAPI);
     // const [iconToWish, setIconToWish] = useState(true)
     const [filepath, setFilepath] = useState({});
+    const [Size, setSize] = useState([]);
+
     const getProducts = async () => {
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_HOST_NAME}api/admin-panel/product/read-product`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_HOST_NAME}api/admin-panel/product/active-product`);
 
             if (response.status !== 200) {
                 Swal.fire({
@@ -45,8 +50,85 @@ const page = () => {
         }
     };
 
-    useEffect(() => { getProducts(); }, []);
-    // console.log(products);
+    const activeCategories = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_HOST_NAME}api/admin-panel/product-category/active-product-category`);
+
+            if (response.status !== 200) return (
+                Swal.fire({
+                    title: "Something went wrong",
+                    text: `${response.data.message}`,
+                    icon: "question"
+                })
+            )
+            setProductCat(response.data.data);
+
+        }
+        catch (error) {
+            console.log('error', error);
+            Swal.fire({
+                title: "Something went wrong",
+                text: `${error.message}`,
+                icon: "question"
+            });
+        }
+    };
+
+    const activeColors = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_HOST_NAME}api/admin-panel/color/active-colors`);
+
+            if (response.status !== 200) return (
+                Swal.fire({
+                    title: "Something went wrong",
+                    text: `${response.data.message}`,
+                    icon: "question"
+                })
+            )
+            getColors(response.data.data);
+        }
+        catch (error) {
+            console.log('error', error);
+            Swal.fire({
+                title: "Something went wrong",
+                text: `${error.message}`,
+                icon: "question"
+            });
+        }
+    };
+
+    const activeSize = async () => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_HOST_NAME}api/admin-panel/size/active-size`);
+
+            if (response.status !== 200) return (
+                Swal.fire({
+                    title: "Something went wrong",
+                    text: `${response.data.message}`,
+                    icon: "question"
+                })
+            )
+
+            setSize(response.data.data);
+
+        }
+        catch (error) {
+            console.log('error');
+            Swal.fire({
+                title: "Something went wrong",
+                text: `${error.message}`,
+                icon: "question"
+            });
+        }
+    };
+
+    useEffect(() => {
+        getProducts();
+        activeCategories();
+        activeColors();
+        activeSize();
+    }, []);
+    console.log(colors);
 
     return (
         <div>
@@ -67,17 +149,14 @@ const page = () => {
                                 <Accordion.Header className='z-index-1 p-0'>Subcategory</Accordion.Header>
                                 <Accordion.Body>
                                     <ul className='p-0 m-0  fw-500'>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Tops </li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Sweaters</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Blazers</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Button-Down Shirts</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Shorts & Skirts</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Dresses</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Overshirts</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Pants</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Denim</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Jackets</li>
-                                        <li className='cursor-pointer'><input type='checkbox' /> Accessories</li>
+                                        {
+                                            productCat.map((cat, index) => {
+                                                return (
+                                                    <li className='cursor-pointer'><input type='checkbox' /> {cat.name}</li>
+                                                )
+                                            })
+                                        }
+
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
@@ -85,13 +164,13 @@ const page = () => {
                                 <Accordion.Header className='z-index-1'>Size</Accordion.Header>
                                 <Accordion.Body>
                                     <ul className='p-0 m-0  fw-500 d-flex flex-wrap gap-4'>
-                                        <li className='cursor-pointer'><span className='border border-1 p-2'>XXS</span></li>
-                                        <li className='cursor-pointer'><span className='border border-1 p-2'>XS</span></li>
-                                        <li className='cursor-pointer'><span className='border border-1 p-2'>S</span></li>
-                                        <li className='cursor-pointer'><span className='border border-1 p-2'>M</span></li>
-                                        <li className='cursor-pointer'><span className='border border-1 p-2'>L</span></li>
-                                        <li className='cursor-pointer'><span className='border border-1 p-2'>XL</span></li>
-                                        <li className='cursor-pointer'><span className='border border-1 p-2 w-25'>ONE SIZE</span></li>
+                                        {
+                                            Size.map((size, index) => {
+                                                return (
+                                                    <li className='cursor-pointer'><span className='border border-1 p-2'>{size.size_name}</span></li>
+                                                )
+                                            })
+                                        }
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
@@ -100,15 +179,17 @@ const page = () => {
                                 <Accordion.Header>Color</Accordion.Header>
                                 <Accordion.Body>
                                     <ul className='p-0 m-0  fw-500'>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black bg-success p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Green</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black bg-black p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Black</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black bg-light p-1 px-2'></span> &nbsp;&nbsp;&nbsp;White</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black color-blue p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Blue</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black color-beige p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Beige</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black color-brown p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Brown</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black bg-secondary p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Gray</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black color-purple p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Purple</li>
-                                        <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black color-yellow p-1 px-2'></span> &nbsp;&nbsp;&nbsp;Yellow</li>
+                                        {
+                                            colors.map((color, index) => {
+                                                return (
+                                                    <li className='cursor-pointer'><span className='rounded-circle border border-1 border-black p-1 px-2'
+                                                        style={{
+                                                            backgroundColor: color.colorcode
+                                                        }}
+                                                    ></span> &nbsp;&nbsp;&nbsp;{color.colorName}</li>
+                                                )
+                                            })
+                                        }
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
@@ -174,19 +255,54 @@ const page = () => {
                                     :
                                     products.map((product, index) => {
                                         return (
-                                            
-                                                <Col className='mx-2 cursor-pointer p-0 z-index-1' style={{ 'width': '200px' }}>
-                                                    <div className='cards z-index-1 cursor-pointer' style={{ 'width': '200px', 'position': 'relative' }}>
-                                                    <Link href={`/website/clothing/${product._id}`} style={{ color: 'black', textDecoration: 'none' }}>
-                                                        <img src={filepath + product.thumbnail} width={200} height={300} /></Link>
+                                            <div>
+
+                                                <Col className='mx-2 cursor-pointer p-0 z-index-1' style={{ 'width': '200px', 'height': '430px' }}>
+
+                                                    <div className='cards  cursor-pointer' style={{ 'width': '200px', 'position': 'relative' }}>
+
+                                                        <Link href={`/website/clothing/${product._id}`} style={{ color: 'black', textDecoration: 'none' }}>
+
+                                                            <img src={filepath + product.thumbnail} className='img' width={200} height={300} />
+
+                                                            <img src={filepath + product.hover_thumbnail} className='image_hover' width={200} height={300} />
+                                                        </Link>
+
+                                                        <div className='discount'>
+                                                            -{
+                                                               Math.floor(
+                                                                    ((product.MRP - product.price) / product.MRP) * 100
+                                                               )
+                                                            }%
+                                                        </div>
+
                                                         <div className='clothing-button'>
                                                             Quick Add
+                                                            <div className='add-size'>
+                                                                {
+                                                                    product.size.map((size, index) => {
+                                                                        return (
+                                                                            <div
+                                                                                className={`m-2 p-1`}>
+                                                                                {size.size_name}
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </div>
                                                         </div>
-                                                        <div className='d-flex w-100 justify-content-between'>
+
+                                                        <div className='d-flex w-100 justify-content-between position-absolute'
+                                                            style={{
+                                                                top: '291px'
+                                                            }}
+                                                        >
+
                                                             <div>
                                                                 <p className='fs-12 fw-bold my-3'>
                                                                     {product.name}
                                                                 </p>
+
                                                                 <div className='fs-12'>Price:
                                                                     <span className='fs-12 fw-bold'>
                                                                         {product.price}Rs.
@@ -194,16 +310,53 @@ const page = () => {
                                                                 </div>
 
                                                                 <span className='fs-12'>MRP: </span>
+
                                                                 <strike className='text-danger fs-12 '>
                                                                     {product.MRP}Rs.
                                                                 </strike>
+
+                                                                <div>
+
+                                                                    <span className='color-color'>
+                                                                        color {product.color.length}
+                                                                    </span>
+                                                                    <span>
+                                                                        {
+                                                                            product.color.map((color, index) => {
+                                                                                return (
+                                                                                    <span
+                                                                                        key={index}
+                                                                                        className='bg-color-color'
+                                                                                        style={{
+                                                                                            backgroundColor: color.colorcode
+                                                                                        }}
+                                                                                    >
+                                                                                    </span>
+                                                                                )
+                                                                            })
+                                                                        }
+                                                                    </span>
+                                                                </div>
+
                                                             </div>
+
                                                             <div>
-                                                                <ChangeIcon />
+
+                                                                {
+                                                                    iconToWish == false
+                                                                        ?
+                                                                        <IoHeartOutline className='my-3' onClick={() => setIconToWish(true)} />
+                                                                        :
+                                                                        <FaHeart className='my-3' onClick={() => setIconToWish(false)} />
+                                                                }
+
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 </Col>
+
+                                            </div>
                                         )
                                     })
                             }
@@ -221,19 +374,12 @@ const page = () => {
 
 export default page
 
-const ChangeIcon = () => {
-    const {iconToWish, setIconToWish} = useContext(ContextAPI);
-    // const [iconToWish, setIconToWish] = useState(false);
-    console.log(iconToWish);
-    return (
-        <div>
-            {
-                iconToWish == false
-                    ?
-                    <IoHeartOutline className='my-3' onClick={() => setIconToWish(true)} />
-                    :
-                    <FaHeart className='my-3' onClick={() => setIconToWish(false)} />
-            }
-        </div>
-    )
-}
+// const Singleproduct = ({ product, filepath }) => {
+//     const { iconToWish, setIconToWish } = useContext(ContextAPI);
+//     console.log(iconToWish);
+//     return (
+//         <div className='position-relative'>
+
+//         </div>
+//     )
+// }
