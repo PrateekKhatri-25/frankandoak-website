@@ -11,6 +11,7 @@ import { Container } from 'react-bootstrap'
 import Image from 'next/image'
 import Loader from '@/app/dashboard/dash_common/Loader'
 import './cart.css'
+import { loadStripe } from '@stripe/stripe-js'
 
 const page = () => {
     const { cookiData, setCookiData } = useContext(ContextAPI);
@@ -107,6 +108,39 @@ const page = () => {
         }
     }
 
+    const subtotal = cartItem.reduce((acc, item) => acc + item.product_id.price * item
+        .quantity, 0);
+
+    const tax = Math.floor(subtotal * (12 / 100));
+
+
+    const handlePayment = async () => {
+        const data=cartItem.map((item,index)=>(
+            {
+                product:item.product_id,
+                color:item.color_id,
+                size:item.size_id,
+                quantity:item.quantity,
+                user:item.user_id
+            }
+        ));
+        
+        const stripe=await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY);
+
+        axios.post(`${process.env.NEXT_PUBLIC_HOST_NAME}api/frankandoak-services/payment/sell`,data)
+        .then((response) => {
+            console.log(response);
+
+            stripe.redirectToCheckout({
+                sessionId:response.data.session
+            })
+            setCartItem(null)
+        })
+        .catch((error) => {
+            console.log(error)  
+        })
+    };
+
     return (
         <div>
             <Header />
@@ -167,7 +201,40 @@ const page = () => {
                         }
                     </div>
                     <div>
-                        <Subtotal data={cartItem} />
+                        <div className='bg-black my-2 p-3 text-white ' style={{
+                            width: '400px'
+                        }}>
+
+                            <h1 className='text-center'>Subtotal</h1>
+
+                            <div className='d-flex fs-3 justify-content-between'>
+                                <p>Amount:</p>
+                                <p>₹{subtotal}</p>
+                            </div>
+
+                            <div className='d-flex fs-3 justify-content-between'>
+                                <p>Tax(12%):</p>
+                                <p>₹{tax}</p>
+                            </div>
+
+                            <p className='fs-3'>
+                                Free Delivery
+                            </p>
+
+                            <div className='d-flex fs-3 justify-content-between'>
+                                <p>Total:</p>
+                                <p>₹{subtotal + tax}</p>
+                            </div>
+
+                            <button
+                                className='checkout-btn' 
+                                onClick={handlePayment}
+                                >
+                                Checkout
+                            </button>
+
+
+                        </div>
 
                     </div>
                 </div>
@@ -178,46 +245,3 @@ const page = () => {
 }
 
 export default page
-
-function Subtotal({ data }) {
-    // console.log(data);
-    const subtotal = data.reduce((acc, item) => acc + item.product_id.price * item
-        .quantity, 0);
-
-    const tax = Math.floor(subtotal * (18 / 100));
-
-    return (
-        <div className='bg-black my-2 p-3 text-white ' style={{
-            width: '400px'
-        }}>
-
-            <h1 className='text-center'>Subtotal</h1>
-
-            <div className='d-flex fs-3 justify-content-between'>
-                <p>Amount:</p>
-                <p>₹{subtotal}</p>
-            </div>
-
-            <div className='d-flex fs-3 justify-content-between'>
-                <p>Tax:</p>
-                <p>₹{tax}</p>
-            </div>
-
-            <p className='fs-3'>
-                Free Delivery
-            </p>
-
-            <div className='d-flex fs-3 justify-content-between'>
-                <p>Total:</p>
-                <p>₹{subtotal + tax}</p>
-            </div>
-
-            <button className='checkout-btn'>
-                Checkout
-            </button>
-
-
-        </div>
-    )
-}
-
